@@ -14,7 +14,7 @@ namespace Juego
         private string apodo; 
         private DateOnly fechaDeNacimiento;
         private int edad; //entre 0 a 300
-        private int salud; //100
+        private double salud; //100
 
         // constructor (método)
         public Datos()
@@ -24,7 +24,7 @@ namespace Juego
             this.apodo = apodos[random.Next(5)];
             this.fechaDeNacimiento = new DateOnly(random.Next(1722,2023), random.Next(1,13), random.Next(1,29));
             this.edad = DateTime.Now.Year - FechaDeNacimiento.Year;
-            this.salud = 100;
+            this.Salud = 100;
         }
 
         // propiedades
@@ -33,7 +33,7 @@ namespace Juego
         public string Apodo { get => apodo; }
         public DateOnly FechaDeNacimiento { get => fechaDeNacimiento; }
         public int Edad { get => edad; }
-        public int Salud { get => salud; }
+        public double Salud { get => salud; set => salud = value; }
     } 
 }
 

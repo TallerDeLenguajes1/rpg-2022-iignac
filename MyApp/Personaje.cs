@@ -4,15 +4,16 @@ namespace Juego
     {
         // campos o variables
         private Datos datPersonaje;
-        private Caracteristicas caracPersonaje;
+        private Caracteristicas caracPersonaje;  
 
         // constructor (método)
-        public Personaje (Datos datPersonaje, Caracteristicas caracPersonaje)
+        public Personaje (Datos d, Caracteristicas c)
         {
-            this.datPersonaje = datPersonaje;
-            this.caracPersonaje = caracPersonaje;
+            this.datPersonaje = d;
+            this.caracPersonaje = c;
+            //this.danioProvocado = (valorDeAtaque() - valorDeDefensa()/50000)*100;
         }
-
+ 
         // propiedades
         public Datos DatPersonaje { get => datPersonaje; }
         public Caracteristicas CaracPersonaje { get => caracPersonaje; }
@@ -43,6 +44,21 @@ namespace Juego
             Console.WriteLine("Fuerza: " + caracPersonaje.Fuerza);
             Console.WriteLine("Nivel: " + caracPersonaje.Nivel);
             Console.WriteLine("Armadura: " + caracPersonaje.Armadura);
+        }
+
+        public double valorDeAtaque()
+        {
+            Random random = new Random();
+            double poderDisparo = caracPersonaje.Destreza*caracPersonaje.Fuerza*caracPersonaje.Nivel;
+            double efectividadDisparo = random.Next(1,101); 
+            double valorDeAtaque = (poderDisparo*efectividadDisparo)/100; //valor porcentual
+            return valorDeAtaque;
+        }
+
+        public double valorDeDefensa()
+        {
+            double poderDefensa = caracPersonaje.Armadura * caracPersonaje.Velocidad;
+            return poderDefensa;
         }
     }   
 }

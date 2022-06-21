@@ -16,15 +16,15 @@ namespace Juego
         {   
             this.velocidad = random.Next(1, 11);
             this.destreza = random.Next(1, 6);
-            this.fuerza = random.Next(1,11);
+            this.Fuerza = random.Next(1,11);
             this.nivel = random.Next(1,11);
             this.armadura = random.Next(1,11);
         }
 
         // propiedades
-        public int Velocidad { get => velocidad; }
+        public int Velocidad { get => velocidad; set => velocidad = value; }
         public int Destreza { get => destreza; }
-        public int Fuerza { get => fuerza; }
+        public int Fuerza { get => fuerza; set => fuerza = value; }
         public int Nivel { get => nivel; }
         public int Armadura { get => armadura; }
     }  
