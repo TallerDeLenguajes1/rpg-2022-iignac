@@ -11,7 +11,6 @@ namespace Juego
         {
             this.datPersonaje = d;
             this.caracPersonaje = c;
-            //this.danioProvocado = (valorDeAtaque() - valorDeDefensa()/50000)*100;
         }
  
         // propiedades
