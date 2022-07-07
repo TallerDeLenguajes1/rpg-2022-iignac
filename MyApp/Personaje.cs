@@ -1,63 +1,62 @@
-namespace Juego
+//namespace Juego
+
+public class Personaje
 {
-    public class Personaje
+    // campos o variables
+    private Datos datPersonaje;
+    private Caracteristicas caracPersonaje;  
+
+    public Personaje(){} //constructor vacio para poder deserializar
+    
+    public Personaje (Datos d, Caracteristicas c) //constructor
     {
-        // campos o variables
-        private Datos datPersonaje;
-        private Caracteristicas caracPersonaje;  
+        this.datPersonaje = d;
+        this.caracPersonaje = c;
+    }
 
-        // constructor (método)
-        public Personaje (Datos d, Caracteristicas c)
-        {
-            this.datPersonaje = d;
-            this.caracPersonaje = c;
-        }
- 
-        // propiedades
-        public Datos DatPersonaje { get => datPersonaje; }
-        public Caracteristicas CaracPersonaje { get => caracPersonaje; }
+    // propiedades
+    public Datos DatPersonaje { get => datPersonaje; set => datPersonaje = value; }
+    public Caracteristicas CaracPersonaje { get => caracPersonaje; set => caracPersonaje = value; }
 
-        // métodos
-        public void mostrarPersonaje()
-        {
-            Console.WriteLine("--- Datos ---");
-            mostrarDatos();
-            Console.WriteLine("--- Características ---");
-            mostrarCaracteristicas();
-        }
+    // métodos
+    public void mostrarPersonaje()
+    {
+        Console.WriteLine("--- Datos ---");
+        mostrarDatos();
+        Console.WriteLine("--- Características ---");
+        mostrarCaracteristicas();
+    }
 
-        public void mostrarDatos()
-        {
-            Console.WriteLine("Tipo: " + datPersonaje.Tipo);
-            Console.WriteLine("Nombre: " + datPersonaje.Nombre);
-            Console.WriteLine("Apodo: " + datPersonaje.Apodo);
-            Console.WriteLine("Fecha de nacimiento: " + datPersonaje.FechaDeNacimiento);
-            Console.WriteLine("Edad: " + datPersonaje.Edad);
-            Console.WriteLine("Salud: " + datPersonaje.Salud);
-        }
+    public void mostrarDatos()
+    {
+        Console.WriteLine("Tipo: " + DatPersonaje.Tipo);
+        Console.WriteLine("Nombre: " + DatPersonaje.Nombre);
+        Console.WriteLine("Apodo: " + DatPersonaje.Apodo);
+        Console.WriteLine("Fecha de nacimiento: " + DatPersonaje.FechaDeNacimiento.ToShortDateString());
+        Console.WriteLine("Edad: " + DatPersonaje.Edad);
+        Console.WriteLine("Salud: " + DatPersonaje.Salud);
+    }
 
-        public void mostrarCaracteristicas()
-        {
-            Console.WriteLine("Velocidad: " + caracPersonaje.Velocidad);
-            Console.WriteLine("Destreza: " + caracPersonaje.Destreza);
-            Console.WriteLine("Fuerza: " + caracPersonaje.Fuerza);
-            Console.WriteLine("Nivel: " + caracPersonaje.Nivel);
-            Console.WriteLine("Armadura: " + caracPersonaje.Armadura);
-        }
+    public void mostrarCaracteristicas()
+    {
+        Console.WriteLine("Velocidad: " + CaracPersonaje.Velocidad);
+        Console.WriteLine("Destreza: " + CaracPersonaje.Destreza);
+        Console.WriteLine("Fuerza: " + CaracPersonaje.Fuerza);
+        Console.WriteLine("Nivel: " + CaracPersonaje.Nivel);
+        Console.WriteLine("Armadura: " + CaracPersonaje.Armadura);
+    }
 
-        public double valorDeAtaque()
-        {
-            Random random = new Random();
-            double poderDisparo = caracPersonaje.Destreza*caracPersonaje.Fuerza*caracPersonaje.Nivel;
-            double efectividadDisparo = random.Next(1,101); 
-            double valorDeAtaque = (poderDisparo*efectividadDisparo)/100; //valor porcentual
-            return valorDeAtaque;
-        }
+    public double valorDeAtaque()
+    {
+        Random random = new Random();
+        double poderDisparo = CaracPersonaje.Destreza*CaracPersonaje.Fuerza*CaracPersonaje.Nivel;
+        double efectividadDisparo = random.Next(1,101); 
+        double valorDeAtaque = (poderDisparo*efectividadDisparo)/100; //valor porcentual
+        return valorDeAtaque;
+    }
 
-        public double valorDeDefensa()
-        {
-            double poderDefensa = caracPersonaje.Armadura * caracPersonaje.Velocidad;
-            return poderDefensa;
-        }
-    }   
-}
+    public double poderDeDefensa()
+    {
+        return CaracPersonaje.Armadura * CaracPersonaje.Velocidad;
+    }
+}   

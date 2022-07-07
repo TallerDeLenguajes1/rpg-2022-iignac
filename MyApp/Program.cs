@@ -1,181 +1,263 @@
-﻿// falta agregar control salud para q si uno llega a 0 de salud no pueda seguir peleando
-// falta eliminar csv al finalizar cada torneo y agregar control de creacion de csv
+﻿//using Juego;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-using Juego;
-
-List<Personaje>listaPeleadores = new List<Personaje>();
-//var listaPeleadores = new List<Personaje>();
-Personaje nuevoPersonaje;
-Datos nuevosDatos;
-Caracteristicas nuevasCaracteristicas;
-int cantPeleadores;
-
-//// csv
-List<Personaje> listaGanadores = new List<Personaje>(); // lista para mostrar los ganadores de los combates
-string archivoCSV = Directory.GetCurrentDirectory() + @"\ganadores.csv";
-FileStream fs = new FileStream(archivoCSV, FileMode.Open);
-StreamWriter sw = new StreamWriter(fs);
-sw.WriteLine("NRO COMBATE;NOMBRE;APODO");
-////
-
+List<Personaje>listaPeleadores = new List<Personaje>(); //var listaPersonajes = new List<Personaje>();
+string path = Directory.GetCurrentDirectory();
+string archivoCsv = path + @"\ganadores.csv";
+string archivoJson = path + @"\personajes.json";
+FileStream fs;
+StreamWriter sw;
+int op;
+int nroCombate;
 
 do
 {
-    Console.WriteLine("\n==> Ingrese la cantidad de peleadores que participarán en la masacre (>= 2): ");
-    cantPeleadores = Convert.ToInt32(Console.ReadLine()); 
-} while (cantPeleadores < 2);
-
-// creo los personajes y los agrego a la lista
-for (int i = 0; i < cantPeleadores; i++)
-{
-    nuevosDatos = new Datos();
-    nuevasCaracteristicas = new Caracteristicas();
-    nuevoPersonaje = new Personaje(nuevosDatos, nuevasCaracteristicas);
-    // nuevoPersonaje = new Personaje(new Datos(), new Caracteristicas());
-    listaPeleadores.Add(nuevoPersonaje);
-}
-
-// muestro la lista
-Console.WriteLine("\n==> LOS PELEADORES SON:");
-mostrarListaPeleadores();
-
-// empieza el torneo
-Console.WriteLine("\nCOMIENZA EL MORTALKOMBAT MAS EPICO DE TODO EL WORLD");
-int combate = 0;
-double dañoProvoc;
-do
-{
-    int cantAtaques = 3;
-    Console.WriteLine($"\n==> COMBATE {combate}: {listaPeleadores[0].DatPersonaje.Nombre} VS {listaPeleadores[1].DatPersonaje.Nombre}");
-    combate++;
+    Console.WriteLine("\n#### CONFIGURACIONES DEL TORNEO ####");
+    elegirCrearCsv();
+    elegirVerCsv();
+    elegirCreacionPeleadores();
+    elegirVerPeleadores();
+    Console.WriteLine("\n##### COMIENZA EL TORNEO MAS BRUTAL DE TODOS LOS TIEMPOS :( #####");
+    nroCombate=0;
     do
     {
-        ataque(listaPeleadores[0], listaPeleadores[1]);
-        ataque(listaPeleadores[1], listaPeleadores[0]);
-        cantAtaques--;
-    } while (cantAtaques > 0);
-    eliminarPerdedor();
-    Console.WriteLine("\n==> GANADOR DEL COMBATE!!!: " + listaPeleadores[0].DatPersonaje.Nombre);  
-    if (listaPeleadores.Count > 1)
-    {
+        nroCombate++;
+        Console.WriteLine($"\n**** COMBATE {nroCombate}: {listaPeleadores[0].DatPersonaje.Nombre} VS {listaPeleadores[1].DatPersonaje.Nombre} ****");
+        Combate nuevoCombate = new Combate(listaPeleadores[0],listaPeleadores[1]);
+        nuevoCombate.pelear();
+        eliminarPerdedor(listaPeleadores[0], listaPeleadores[1]);
         mejorarGanador();
-    }
-
-    // agrego el ganador a la lista de ganadores
-    listaGanadores.Add(listaPeleadores[0]);
-    
-    // guardo el ganador en el archivo CSV
-    guardarGanadorCVS(combate, listaPeleadores[0]);
-   
-} while (listaPeleadores.Count > 1);
-
-sw.Close();
-fs.Close();
-
-Console.WriteLine($"\n==> EL VENCEDOR DEL TORNEO Y GANADOR DEL TRONO DE HIERRO ES: ");
-listaPeleadores[0].mostrarDatos();
-Console.WriteLine("\nFELICITACIONES CAMPEÓN!!!!!!!!!!!");
-
-
-Console.WriteLine("\n ==> DESEA VER EL LISTADO DE LOS GANADORES DE TODOS LOS COMBATES? (1: Si, 0: No)");
-int verGanadores = Convert.ToInt32(Console.ReadLine());
-if (verGanadores == 1)
-{
-   mostrarListaGanadores();
-}
-
-
-
-///// FUNCIONES
-
-void mostrarListaPeleadores()
-{
-    for (int i = 0; i < listaPeleadores.Count; i++)
+        Console.WriteLine($"\n>>>> Ganador del combate: {listaPeleadores[0].DatPersonaje.Nombre} <<<<");
+        Console.ReadKey();
+    } while (listaPeleadores.Count > 1);
+    guardarGanadorCsv();
+    Console.WriteLine($"\n>>>> EL VENCEDOR DEL TORNEO Y GANADOR DEL TRONO DE HIERRO ES: <<<<");
+    listaPeleadores[0].mostrarDatos();
+    Console.WriteLine("\nFELICITACIONES CAMPEÓN!!!!!!!!!");
+    Console.WriteLine("\n----------------------");
+    do
     {
-        Console.WriteLine("\n### Personaje " + Convert.ToInt32(i+1) + " ###");
-        listaPeleadores[i].mostrarPersonaje();
-    }
-}
-
-void mostrarListaGanadores()
-{
-    Console.WriteLine("---- GANADORES DE LOS COMBATES ----");
-    int i = 0;
-    foreach (Personaje ganador in listaGanadores)
+        Console.WriteLine("\n==> ¿Jugar un nuevo Torneo? [1]Si, [0]No <==");
+        op = Convert.ToInt32(Console.ReadLine());
+    } while (op<0 || op>1);
+    if (op==1)
     {
-        i++;
-        Console.WriteLine($"Combate nro {i} - Nombre: {ganador.DatPersonaje.Nombre} - Apodo: {ganador.DatPersonaje.Apodo}");
-        Console.WriteLine("---------------------------------------------------");
+        listaPeleadores.Remove(listaPeleadores[0]);
     }
-}
+} while (op==1);
 
-void guardarGanadorCVS(int combate, Personaje personaje)
-{
-    sw.WriteLine(combate.ToString() + ";" + personaje.DatPersonaje.Nombre + ";" + personaje.DatPersonaje.Tipo);
-}
 
-void ataque(Personaje personaje1, Personaje personaje2)
+//---------------- FUNCIONES -----------------------
+
+void elegirCrearCsv()
 {
-    Console.WriteLine($"\nATACA {personaje1.DatPersonaje.Nombre}!");
-    dañoProvoc = dañoProvocado(personaje1, personaje2);
-    if (dañoProvoc < 0)
+    if (!File.Exists(archivoCsv))
     {
-        dañoProvoc = Math.Abs(dañoProvoc);
-        Console.WriteLine($"{personaje2.DatPersonaje.Nombre} ESQUIVÓ EL ATAQUE Y COONTRATACÓ!!");
-        Console.WriteLine($"DAÑO PROVOCADO A {personaje1.DatPersonaje.Nombre}: {dañoProvoc}");
-        personaje1.DatPersonaje.Salud = Convert.ToDouble(personaje1.DatPersonaje.Salud - dañoProvoc);
-        Console.WriteLine($"SALUD DE {personaje1.DatPersonaje.Nombre}: {personaje1.DatPersonaje.Salud}");
+        Console.WriteLine("\n==> No existe un archivo Csv para guardar los ganadores de los Torneos, a continuacion se creará uno automaticamente... <==");
+        crearCsv();
     }
     else
     {
-        Console.WriteLine($"DAÑO PROVOCADO A {personaje2.DatPersonaje.Nombre}: {dañoProvoc}");
-        personaje2.DatPersonaje.Salud = Convert.ToDouble(personaje2.DatPersonaje.Salud - dañoProvoc);
-        Console.WriteLine($"SALUD DE {personaje2.DatPersonaje.Nombre}: {personaje2.DatPersonaje.Salud}");
-    }
-    Console.WriteLine("------------------");
-}
-
-double dañoProvocado(Personaje personaje1, Personaje personaje2)
-{
-    return ((personaje1.valorDeAtaque() - personaje2.valorDeDefensa())/500)*100;
-}
-
-void eliminarPerdedor()
-{
-    if (listaPeleadores[0].DatPersonaje.Salud == listaPeleadores[1].DatPersonaje.Salud)
-    {
-        Console.WriteLine("\n==>EL COMBATE FINALIZÓ EMPATADO, deberás sacrificar a un peleador :(");
-        Console.WriteLine($"(1){listaPeleadores[0].DatPersonaje.Nombre}, (2){listaPeleadores[1].DatPersonaje.Nombre}");
-        int opcion=0; 
+        Console.WriteLine("\n==> Se detecto un archivo Csv de los ganadores de los Torneos, ¿desea usarlo o crear uno nuevo? <=");
         do
         {
-            opcion = Convert.ToInt32(Console.ReadLine());
-        } while (opcion<1 && opcion>2);
-        if (opcion==1)
+            Console.WriteLine("[1]Usarlo, [0]Crear uno nuevo (se elimina el archivo anterior)");
+            op = Convert.ToInt32(Console.ReadLine());  
+        } while (op<0 || op>1);
+        if (op==0)
         {
-            listaPeleadores.Remove(listaPeleadores[0]);
+            crearCsv();
         }
-        else
+    }
+}
+
+void crearCsv()
+{   
+    using (fs = new FileStream(archivoCsv, FileMode.Create))
+    {
+        using (sw = new StreamWriter(fs))
         {
-            listaPeleadores.Remove(listaPeleadores[1]);
+            sw.WriteLine("VICTORIAS"+","+"NOMBRE"+","+"APODO"+","+"FECHA"+","+"HORA");
         }
+    }
+    Console.WriteLine("==> Archivo Csv creado con éxito <==");
+    Console.ReadKey();
+}
+
+void guardarGanadorCsv() //guarda al ganador de un Torneo
+{
+    using (fs = new FileStream(archivoCsv, FileMode.Append))
+    {
+        using (sw = new StreamWriter(fs))
+        {
+            sw.WriteLine(listaPeleadores[0].DatPersonaje.Victorias+","+listaPeleadores[0].DatPersonaje.Nombre+","+listaPeleadores[0].DatPersonaje.Tipo+","+DateTime.Now.ToShortDateString()+","+DateTime.Now.ToShortTimeString());
+        }
+    }
+}
+
+void elegirVerCsv()
+{
+    do
+    {
+        Console.WriteLine("\n==> ¿Desea ver el contenido guardado del archivo Csv? (1)Si, 0(No) <==");
+        op = Convert.ToInt32(Console.ReadLine());  
+    } while (op<0 || op>1);
+    if (op==1)
+    {
+        string[] ganadores = File.ReadAllLines(archivoCsv);
+        string[] valores;
+        for (int i = 0; i < ganadores.Count(); i++)
+        {
+            valores = ganadores[i].Split(';');
+            for (int j= 0; j < valores.Count(); j++)
+            {
+                Console.Write(valores[j] + "  ");
+            }
+            Console.WriteLine();
+        }
+        Console.ReadKey();
+    }
+}
+
+void elegirCreacionPeleadores() //elegir usar personajes del archivo Json o crear personajes nuevos aleatoriamente
+{
+    bool aux = true;
+    if (!File.Exists(archivoJson)) //en caso de que no existe un Json se crea uno automaticamente
+    {
     }
     else
     {
-        if (listaPeleadores[0].DatPersonaje.Salud > listaPeleadores[1].DatPersonaje.Salud)
+        Console.WriteLine("\n==> Se detecto un archivo Json con personajes del Torneo anterior, ¿desea usar los mismos personajes o crear nuevos?");
+        do
         {
-            listaPeleadores.Remove(listaPeleadores[1]);
+            Console.WriteLine("[1]Usarlos, [2]Crear Nuevos");
+            op = Convert.ToInt32(Console.ReadLine());
+        } while (op<1 || op>2);
+        if (op==1)
+        {
+            deserializarJson();
+            aux = false;
+        }
+    }
+    if (aux==true)
+    {
+        crearJson();
+        crearListaPeleadores(elegirCantPeleadores());
+        serializarJson(); 
+    }
+}
+
+void crearJson() //crea un nuevo Json. Si ya existe uno se lo sobreescribe
+{
+    fs = new FileStream(archivoJson, FileMode.Create);
+    fs.Close();
+}
+
+void serializarJson() //guarda los personajes en un Json
+{
+    using (fs = new FileStream(archivoJson, FileMode.Create))
+    {
+        using (sw = new StreamWriter(fs))
+        {
+            string stringJson = JsonSerializer.Serialize(listaPeleadores);
+            sw.WriteLine(stringJson);
+        }
+    }
+}
+
+void deserializarJson()
+{
+    using (fs = new FileStream(archivoJson, FileMode.Open))
+    {
+        using (StreamReader sr = new StreamReader(fs))
+        {
+            string stringJson = sr.ReadToEnd();
+            listaPeleadores = JsonSerializer.Deserialize<List<Personaje>>(stringJson)!;
+        }
+    }
+}
+
+int elegirCantPeleadores()
+{
+    int cantPeleadores;
+    do
+    {
+        Console.WriteLine("\n==> Ingrese la cantidad de peleadores que participarán en el Torneo (2 Min - 10 Max) <== ");
+        cantPeleadores = Convert.ToInt32(Console.ReadLine()); 
+    } while (cantPeleadores<2 || cantPeleadores>10 );
+    return cantPeleadores;
+}
+
+void crearListaPeleadores(int cantPeleadores)
+{
+    Personaje nuevoPersonaje;
+    Datos nuevosDatos;
+    Caracteristicas nuevasCaracteristicas;
+    for (int i = 0; i < cantPeleadores; i++)
+    {
+        nuevosDatos = new Datos();
+        nuevasCaracteristicas = new Caracteristicas();
+        nuevoPersonaje = new Personaje(nuevosDatos, nuevasCaracteristicas); //nuevoPersonaje = new Personaje(new Datos(), new Caracteristicas());
+        listaPeleadores.Add(nuevoPersonaje);
+    }
+}
+
+void elegirVerPeleadores()
+{
+    int verLista;
+    do
+    {
+        Console.WriteLine("\n==> Desea ver los peleadores que participaran del torneo? (1: Si, 0:No) <==");
+        verLista = Convert.ToInt32(Console.ReadLine());
+    } while (verLista<0 || verLista>1);
+    if (verLista==1)
+    {   
+        for (int i = 0; i < listaPeleadores.Count; i++)
+        {
+            Console.WriteLine($"\n**** PELEADOR {Convert.ToInt32(i+1)} ****");
+            listaPeleadores[i].mostrarPersonaje();
+            Console.ReadKey();
+        };
+    }
+}
+
+void eliminarPerdedor(Personaje peleador1, Personaje peleador2)
+{
+    if (peleador1.DatPersonaje.Salud < peleador2.DatPersonaje.Salud)
+    {
+        listaPeleadores.Remove(peleador1);
+    }
+    else
+    {
+        if (peleador1.DatPersonaje.Salud > peleador2.DatPersonaje.Salud)
+        {
+            listaPeleadores.Remove(peleador2);
         }
         else
         {
-            listaPeleadores.Remove(listaPeleadores[0]);
+            Console.WriteLine("\nEl combate termino empatado. Elija un peleador para SACRIFICARLO:");
+            do
+            {
+                Console.WriteLine($"==> (1){peleador1.DatPersonaje.Nombre}, (2){peleador2.DatPersonaje.Nombre} <==");
+                op = Convert.ToInt32(Console.ReadLine());
+            } while (op<1 || op>2);
+            if (op==1)
+            {
+                listaPeleadores.Remove(peleador1);
+            }
+            else
+            {
+                listaPeleadores.Remove(peleador2);
+            }
         }
     }
 }
 
 void mejorarGanador()
 {
-    //listaPeleadores[0].DatPersonaje.Salud = 110; // recupera su salud y se le suma 10
-    listaPeleadores[0].CaracPersonaje.Fuerza = listaPeleadores[0].CaracPersonaje.Fuerza + Convert.ToInt32(listaPeleadores[0].CaracPersonaje.Fuerza * 0.1); // aumenta un 10% en fuerza
-    listaPeleadores[0].CaracPersonaje.Velocidad += 2; // aumenta 2 en velocidad;
+    listaPeleadores[0].DatPersonaje.Salud += 5; 
+    listaPeleadores[0].DatPersonaje.Victorias += 1;
+    listaPeleadores[0].CaracPersonaje.Fuerza += 1;
+    listaPeleadores[0].CaracPersonaje.Velocidad += 2;
 }

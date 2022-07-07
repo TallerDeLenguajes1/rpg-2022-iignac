@@ -1,25 +1,5 @@
-NRO COMBATE;NOMBRE;APODO
-1;Megaman;Cumbiera
-2;Megaman;Cumbiera
-3;Batman;Cazador
-4;Batman;Cazador
-5;Megaman;Bestia
-6;Megaman;Bestia
-7;Batman;Bestia
-8;Messi;Bestia
-9;Scooby-Doo;Saiyajin
-10;Messi;Cumbiera
-11;Maradona;Cazador
-12;Sub-Zero;Cumbiera
-13;Sub-Zero;Cumbiera
-14;Peppa Pig;Ladrón
-15;David;Doncella
-16;David;Doncella
-17;David;Doncella
-18;Batman;Saiyajin
-19;Sub-Zero;Saiyajin
-20;Sub-Zero;Cumbiera
-21;Sub-Zero;Cumbiera
-22;Sub-Zero;Rockera
-23;Sub-Zero;Rockera
-24;Sub-Zero;Rockera
+VICTORIAS,NOMBRE,APODO,FECHA,HORA
+3,Scooby,Cazador,7/7/2022,15:51
+3,Maradona,Hechicero,7/7/2022,15:52
+4,Scooby,Cumbiera,7/7/2022,15:52
+3,Peppa Pig,Hechicero,7/7/2022,15:52
