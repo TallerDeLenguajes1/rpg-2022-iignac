@@ -1,5 +1,3 @@
-//namespace Juego
-
 public class Caracteristicas
 {   
     Random random = new Random();

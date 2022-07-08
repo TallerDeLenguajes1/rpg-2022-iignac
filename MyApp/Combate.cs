@@ -14,12 +14,11 @@ public class Combate
     public void pelear()
     {
         int totalRounds=3;
-        //int nroRound=0;
         for (int i = 0; i < totalRounds; i++)
         {
+            
             if (peleador1.DatPersonaje.Vivo==true)
             {
-                //nroRound++;
                 Console.WriteLine($"\n--- Round {Convert.ToInt32(i+1)} FIGHT! ---");
                 ataque(peleador1, peleador2);
                 if (peleador2.DatPersonaje.Vivo==true)

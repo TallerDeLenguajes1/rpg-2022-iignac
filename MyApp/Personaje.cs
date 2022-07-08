@@ -1,5 +1,3 @@
-//namespace Juego
-
 public class Personaje
 {
     // campos o variables
@@ -35,6 +33,8 @@ public class Personaje
         Console.WriteLine("Fecha de nacimiento: " + DatPersonaje.FechaDeNacimiento.ToShortDateString());
         Console.WriteLine("Edad: " + DatPersonaje.Edad);
         Console.WriteLine("Salud: " + DatPersonaje.Salud);
+        Console.WriteLine("Excusa favorita: " + DatPersonaje.ExcusaFavorita);
+
     }
 
     public void mostrarCaracteristicas()

@@ -1,6 +1,6 @@
-﻿//using Juego;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Net;
 
 List<Personaje>listaPeleadores = new List<Personaje>(); //var listaPersonajes = new List<Personaje>();
 string path = Directory.GetCurrentDirectory();
@@ -19,6 +19,8 @@ do
     elegirCreacionPeleadores();
     elegirVerPeleadores();
     Console.WriteLine("\n##### COMIENZA EL TORNEO MAS BRUTAL DE TODOS LOS TIEMPOS :( #####");
+    Console.Write($"**** Esta contienda se llevara a cabo en: {obtenerProvApi()} ****");
+    Console.ReadKey();
     nroCombate=0;
     do
     {
@@ -36,16 +38,7 @@ do
     listaPeleadores[0].mostrarDatos();
     Console.WriteLine("\nFELICITACIONES CAMPEÓN!!!!!!!!!");
     Console.WriteLine("\n----------------------");
-    do
-    {
-        Console.WriteLine("\n==> ¿Jugar un nuevo Torneo? [1]Si, [0]No <==");
-        op = Convert.ToInt32(Console.ReadLine());
-    } while (op<0 || op>1);
-    if (op==1)
-    {
-        listaPeleadores.Remove(listaPeleadores[0]);
-    }
-} while (op==1);
+} while (jugarNuevoTorneo()==1);
 
 
 //---------------- FUNCIONES -----------------------
@@ -196,12 +189,47 @@ void crearListaPeleadores(int cantPeleadores)
     Caracteristicas nuevasCaracteristicas;
     for (int i = 0; i < cantPeleadores; i++)
     {
-        nuevosDatos = new Datos();
+        nuevosDatos = new Datos(obtenerExcusaApi());
         nuevasCaracteristicas = new Caracteristicas();
         nuevoPersonaje = new Personaje(nuevosDatos, nuevasCaracteristicas); //nuevoPersonaje = new Personaje(new Datos(), new Caracteristicas());
         listaPeleadores.Add(nuevoPersonaje);
     }
 }
+
+string obtenerExcusaApi()
+{
+    var url = $"https://excuser.herokuapp.com/v1/excuse";
+    var request = (HttpWebRequest)WebRequest.Create(url);
+    request.Method = "GET";
+    request.ContentType = "application/json";
+    request.Accept = "application/json";
+    try
+    {
+        using (WebResponse response = request.GetResponse())
+        {
+            using (Stream strReader = response.GetResponseStream())
+            {
+                if (strReader != null)
+                {
+                    using (StreamReader objReader = new StreamReader(strReader))
+                    {
+                        string responseBody = objReader.ReadToEnd(); 
+                        List<Excusa> excusaFav = JsonSerializer.Deserialize<List<Excusa>>(responseBody)!;
+                        return excusaFav[0].excuse;
+                    }
+                }
+                else
+                {
+                    return "No sos vos, soy yo...";
+                }
+            }
+        }
+    }
+    catch (Exception)
+    {
+        return "No sos vos, soy yo...";
+    }   
+}   
 
 void elegirVerPeleadores()
 {
@@ -221,6 +249,40 @@ void elegirVerPeleadores()
         };
     }
 }
+
+string obtenerProvApi()
+{
+    var url = $"https://apis.datos.gob.ar/georef/api/provincias?campos=id,nombre";
+    var request = (HttpWebRequest)WebRequest.Create(url);
+    request.Method = "GET";
+    request.ContentType = "application/json";
+    request.Accept = "application/json";
+    try
+    {
+        using (WebResponse response = request.GetResponse())
+        {
+            using (Stream strReader = response.GetResponseStream())
+            {
+                if (strReader != null)
+                using (StreamReader objReader = new StreamReader(strReader))
+                {
+                    string responseBody = objReader.ReadToEnd(); 
+                    ProvinciasArgentina ProvinciasArg = JsonSerializer.Deserialize<ProvinciasArgentina>(responseBody)!;
+                    Random rnd = new Random();
+                    return ProvinciasArg.Provincias[rnd.Next(24)].Nombre;
+                }
+                else
+                {
+                    return "Tucuman, barrio San Cayetano :S";
+                }
+            }
+        }
+    }
+    catch (Exception)
+    {
+        return "Tucuman, barrio La Bombilla :S";
+    }
+}   
 
 void eliminarPerdedor(Personaje peleador1, Personaje peleador2)
 {
@@ -260,4 +322,18 @@ void mejorarGanador()
     listaPeleadores[0].DatPersonaje.Victorias += 1;
     listaPeleadores[0].CaracPersonaje.Fuerza += 1;
     listaPeleadores[0].CaracPersonaje.Velocidad += 2;
+}
+
+int jugarNuevoTorneo()
+{
+    do
+    {
+        Console.WriteLine("\n==> ¿Jugar un nuevo Torneo? [1]Si, [0]No <==");
+        op = Convert.ToInt32(Console.ReadLine());
+    } while (op<0 || op>1);
+    if (op==1)
+    {
+        listaPeleadores.Remove(listaPeleadores[0]);
+    }
+    return op;
 }

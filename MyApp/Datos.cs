@@ -1,5 +1,3 @@
-//namespace Juego
-
 public class Datos
 {
     string[] tipos = {"Bestia", "Saiyajin", "Hechicero", "Rockera", "Templario", "Doncella", "Ladron", "Cumbiera", "Cazador"};
@@ -15,9 +13,10 @@ public class Datos
     private double salud; //100
     private bool vivo; //esta vivo si salud es > 0
     private int victorias; //cantidad de combates ganados
+    private string excusaFavorita;
 
     // constructor (método)
-    public Datos()
+    public Datos(string excusaFavorita)
     {
         Random random = new Random();
         this.tipo = tipos[random.Next(9)];
@@ -27,7 +26,8 @@ public class Datos
         this.edad = DateTime.Now.Year - FechaDeNacimiento.Year;
         this.salud = 100;
         this.vivo = true;
-        this.Victorias = 0;
+        this.victorias = 0;
+        this.excusaFavorita = excusaFavorita;
     }
 
     // propiedades
@@ -39,7 +39,5 @@ public class Datos
     public double Salud { get => salud; set => salud = value; }
     public bool Vivo { get => vivo; set => vivo = value; }
     public int Victorias { get => victorias; set => victorias = value; }
-    // public string[] Tipos { get => tipos; set => tipos = value; }
-    // public string[] Nombres { get => nombres; set => nombres = value; }
-    // public string[] Apodos { get => apodos; set => apodos = value; }
+    public string ExcusaFavorita { get => excusaFavorita; set => excusaFavorita = value; }
 } 
