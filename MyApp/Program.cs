@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using System.Net;
 
 List<Personaje>listaPeleadores = new List<Personaje>(); //var listaPersonajes = new List<Personaje>();
+Combate nuevoCombate;
 string path = Directory.GetCurrentDirectory();
 string archivoCsv = path + @"\ganadores.csv";
 string archivoJson = path + @"\personajes.json";
@@ -26,7 +27,7 @@ do
     {
         nroCombate++;
         Console.WriteLine($"\n**** COMBATE {nroCombate}: {listaPeleadores[0].DatPersonaje.Nombre} VS {listaPeleadores[1].DatPersonaje.Nombre} ****");
-        Combate nuevoCombate = new Combate(listaPeleadores[0],listaPeleadores[1]);
+        nuevoCombate = new Combate(listaPeleadores[0],listaPeleadores[1]);
         nuevoCombate.pelear();
         eliminarPerdedor(listaPeleadores[0], listaPeleadores[1]);
         mejorarGanador();
@@ -227,7 +228,7 @@ string obtenerExcusaApi()
     }
     catch (Exception)
     {
-        return "No sos vos, soy yo...";
+        return "Este joystick anda mal...";
     }   
 }   
 
