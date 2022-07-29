@@ -34,6 +34,8 @@ public class Combate
             {
                 break; //i=totalRounds;
             }
+            Console.WriteLine("==> PRESIONE UNA TECLA PARA CONTINUAR <==");
+            Console.ReadKey();
         }
     }
 

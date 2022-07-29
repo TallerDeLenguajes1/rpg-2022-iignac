@@ -31,7 +31,7 @@ public class Personaje
         Console.WriteLine("Nombre: " + DatPersonaje.Nombre);
         Console.WriteLine("Apodo: " + DatPersonaje.Apodo);
         Console.WriteLine("Fecha de nacimiento: " + DatPersonaje.FechaDeNacimiento.ToShortDateString());
-        Console.WriteLine("Edad: " + DatPersonaje.Edad);
+        Console.WriteLine($"Edad: {DatPersonaje.Edad} anios");
         Console.WriteLine("Salud: " + DatPersonaje.Salud);
         Console.WriteLine("Excusa favorita: " + DatPersonaje.ExcusaFavorita);
 

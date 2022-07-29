@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Net;
 
+// Creo la lista, clases y variables a utilizar 
 List<Personaje>listaPeleadores = new List<Personaje>(); //var listaPersonajes = new List<Personaje>();
 Combate nuevoCombate;
 string path = Directory.GetCurrentDirectory();
@@ -11,16 +12,23 @@ FileStream fs;
 StreamWriter sw;
 int op;
 int nroCombate;
+string press = "==> PRESIONE UNA TECLA PARA CONTINUAR <==";
+/////////
+
 
 do
-{
+{   
+    // configuraciones PRE TORNEO
     Console.WriteLine("\n#### CONFIGURACIONES DEL TORNEO ####");
     elegirCrearCsv();
     elegirVerCsv();
     elegirCreacionPeleadores();
     elegirVerPeleadores();
+    //////
+
     Console.WriteLine("\n##### COMIENZA EL TORNEO MAS BRUTAL DE TODOS LOS TIEMPOS :( #####");
-    Console.Write($"**** Esta contienda se llevara a cabo en: {obtenerProvApi()} ****");
+    Console.Write($"**** Esta contienda se llevara a cabo en: {obtenerProvApi()} ****\n");
+    Console.WriteLine(press);
     Console.ReadKey();
     nroCombate=0;
     do
@@ -32,6 +40,7 @@ do
         eliminarPerdedor(listaPeleadores[0], listaPeleadores[1]);
         mejorarGanador();
         Console.WriteLine($"\n>>>> Ganador del combate: {listaPeleadores[0].DatPersonaje.Nombre} <<<<");
+        Console.WriteLine(press);
         Console.ReadKey();
     } while (listaPeleadores.Count > 1);
     guardarGanadorCsv();
@@ -72,10 +81,11 @@ void crearCsv()
     {
         using (sw = new StreamWriter(fs))
         {
-            sw.WriteLine("VICTORIAS"+","+"NOMBRE"+","+"APODO"+","+"FECHA"+","+"HORA");
+            sw.WriteLine("VICTORIAS"+","+"NOMBRE"+","+"APODO"+","+"FECHA"+","+"HORA"); // VICTORIAS obtenidas en el torneo por el campeon
         }
     }
     Console.WriteLine("==> Archivo Csv creado con éxito <==");
+    Console.WriteLine(press);
     Console.ReadKey();
 }
 
@@ -103,13 +113,14 @@ void elegirVerCsv()
         string[] valores;
         for (int i = 0; i < ganadores.Count(); i++)
         {
-            valores = ganadores[i].Split(';');
+            valores = ganadores[i].Split(',');
             for (int j= 0; j < valores.Count(); j++)
             {
                 Console.Write(valores[j] + "  ");
             }
-            Console.WriteLine();
+            Console.WriteLine(); //para dar un salto de linea
         }
+        Console.WriteLine(press);
         Console.ReadKey();
     }
 }
@@ -160,7 +171,7 @@ void serializarJson() //guarda los personajes en un Json
     }
 }
 
-void deserializarJson()
+void deserializarJson() //crea los personajes usando el Json
 {
     using (fs = new FileStream(archivoJson, FileMode.Open))
     {
@@ -228,7 +239,7 @@ string obtenerExcusaApi()
     }
     catch (Exception)
     {
-        return "Este joystick anda mal...";
+        return "Este joystick anda mal";
     }   
 }   
 
@@ -246,8 +257,9 @@ void elegirVerPeleadores()
         {
             Console.WriteLine($"\n**** PELEADOR {Convert.ToInt32(i+1)} ****");
             listaPeleadores[i].mostrarPersonaje();
+            Console.WriteLine(press);
             Console.ReadKey();
-        };
+        }
     }
 }
 
